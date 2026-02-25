@@ -5,3 +5,5 @@ Day 1: 23/02/2026
 Day 2: 25/02/2026
 - setup dbConnect.ts
 - create global mongoose interface
+- create register api route
+- install bcryptjs
