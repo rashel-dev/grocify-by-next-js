@@ -7,3 +7,6 @@ Day 2: 25/02/2026
 - create global mongoose interface
 - create register api route
 - install bcryptjs
+
+Day-3: 26/02/2026
+-
