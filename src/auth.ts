@@ -27,7 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 throw new Error("Invalid password");
             }
             return {
-              id: user._id,
+              id: user._id.toString(),
               email: user.email,
               name: user.name,
               role: user.role
@@ -40,4 +40,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    jwt({token, user}){
+      if(user){
+        token.id = user.id,
+        token.name = user.name,
+        token.email = user.email,
+        token.role = user.role
+      }
+      return token;
+    },
+
+    session({session, token}){
+      if(token){
+        session.user.id = token.id as string,
+        session.user.name = token.name as string,
+        session.user.email = token.email as string,
+        session.user.role = token.role as string
+      }
+      return session;
+    }
+  },
+  pages: {
+    signIn: "/login",
+    error: "/login"
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 })
