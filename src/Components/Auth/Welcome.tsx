@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { FaArrowRight } from 'react-icons/fa';
 import { LuBike, LuShoppingBasket } from 'react-icons/lu';
 
-const Welcome = () => {
+const Welcome = ({setStep}: {setStep: (step: number) => void}) => {
     return (
         <div className='flex flex-col items-center justify-center gap-4 w-full min-h-screen text-center p-6'>
 
@@ -39,6 +39,7 @@ const Welcome = () => {
                 whileHover="hover"
                 transition={{ duration: 0.3 }}
                 className='bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 cursor-pointer shadow-lg transition-colors duration-300 ease-in-out'
+                onClick={() => setStep(2)}
             >
                 Get Started
                 <motion.span

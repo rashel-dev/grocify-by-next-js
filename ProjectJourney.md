@@ -9,4 +9,8 @@ Day 2: 25/02/2026
 - install bcryptjs
 
 Day-3: 26/02/2026
--
+- setup auth.ts
+
+Day-4: 28/02/2026
+- setup initial animated welcome page
+- install framer-motion and react-icons
