@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaArrowLeft, FaEyeSlash, FaLeaf, FaLock, FaUser } from 'react-icons/fa';
+import { FaArrowLeft, FaEye, FaEyeSlash, FaLeaf, FaLock, FaUser } from 'react-icons/fa';
 import { IoMdMail } from 'react-icons/io';
 
 const RegisterForm = ({previousStep}: {previousStep: (step: number) => void}) => {
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    
+
     return (
         <div className="flex flex-col items-center justify-center px-6 py-10 relative">
 
@@ -67,12 +73,22 @@ const RegisterForm = ({previousStep}: {previousStep: (step: number) => void}) =>
                 <div className='relative'>
                     <FaLock className='text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4'/>
                     <input 
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         placeholder=""
                         className='peer w-full border border-gray-300 rounded-xl py-3.5 pl-11 pr-4 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none'
                     />
-                    <FaEyeSlash className='text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200'/>
+                    {showPassword ? (
+                        <FaEye 
+                            className='text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200'
+                            onClick={() => setShowPassword(!showPassword)}
+                        />
+                    ) : (
+                        <FaEyeSlash 
+                            className='text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200'
+                            onClick={() => setShowPassword(!showPassword)}
+                        />
+                    )}
                     <label 
                         htmlFor="password"
                         className='absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2'
@@ -83,12 +99,22 @@ const RegisterForm = ({previousStep}: {previousStep: (step: number) => void}) =>
                 <div className='relative'>
                     <FaLock className='text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4'/>
                     <input 
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         id="confirm_password"
                         placeholder=""
                         className='peer w-full border border-gray-300 rounded-xl py-3.5 pl-11 pr-4 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none'
                     />
-                    <FaEyeSlash className='text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200'/>
+                    {showConfirmPassword ? (
+                        <FaEye 
+                            className='text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200'
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        />
+                    ) : (
+                        <FaEyeSlash 
+                            className='text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200'
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        />
+                    )}
                     <label 
                         htmlFor="confirm_password"
                         className='absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2'
