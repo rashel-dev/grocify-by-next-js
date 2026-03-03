@@ -16,8 +16,13 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const { register, handleSubmit, watch, formState: { isValid } } = useForm<IFormInputs>({ 
-        mode: "onChange"
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { isValid, errors },
+    } = useForm<IFormInputs>({
+        mode: "onChange",
     });
 
     const password = watch("password");
@@ -43,113 +48,120 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                 Join Grocify today and enjoy fresh products <FaLeaf className="text-green-600" />
             </p>
 
-            <motion.form 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                transition={{ duration: 0.6, delay: 0.3 }} className="flex flex-col gap-4 w-full max-w-sm" onSubmit={handleSubmit(onSubmit)}>
+            <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }} className="flex flex-col gap-4 w-full max-w-sm" onSubmit={handleSubmit(onSubmit)}>
                 {/* Full Name Field*/}
-                <div className="relative">
-                    <FaUser className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
-                    <input
-                        {...register("full_name", {required: true})}
-                        type="text"
-                        id="full_name"
-                        placeholder=" "
-                        className="peer w-full border border-gray-300 rounded-xl py-3.5 pl-11 pr-4 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none"
-                    />
-                    <label
-                        htmlFor="full_name"
-                        className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none
-                        peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e3fdec] peer-focus:px-2
-                        peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e3fdec] peer-[:not(:placeholder-shown)]:px-2"
-                    >
-                        Full Name
-                    </label>
+                <div>
+                    <div className="relative">
+                        <FaUser className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
+                        <input
+                            {...register("full_name", { required: "Name is required", minLength: { value: 3, message: "Name must be at least 3 characters long" } })}
+                            type="text"
+                            id="full_name"
+                            placeholder=" "
+                            className={`peer w-full border rounded-xl py-3.5 pl-11 pr-4 focus:ring-2 focus:outline-none ${errors.full_name ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-gray-300 focus:border-green-500 focus:ring-green-500/20"}`}
+                        />
+                        <label
+                            htmlFor="full_name"
+                            className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none
+                            peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e3fdec] peer-focus:px-2
+                            peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e3fdec] peer-[:not(:placeholder-shown)]:px-2"
+                        >
+                            Full Name
+                        </label>
+                    </div>
+                    {errors?.full_name && <p className="text-red-500 text-xs ml-4">{errors.full_name.message}</p>}
                 </div>
 
                 {/* Email Field*/}
-                <div className="relative">
-                    <IoMdMail className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
-                    <input
-                        {...register("email", {required: true})}
-                        type="email"
-                        id="email"
-                        placeholder=" "
-                        className="peer w-full border border-gray-300 rounded-xl py-3.5 pl-11 pr-4 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none"
-                    />
-                    <label
-                        htmlFor="email"
-                        className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2"
-                    >
-                        Email
-                    </label>
+                <div>
+                    <div className="relative">
+                        <IoMdMail className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
+                        <input
+                            {...register("email", { required: "Email is required", pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" } })}
+                            type="email"
+                            id="email"
+                            placeholder=" "
+                            className={`peer w-full border rounded-xl py-3.5 pl-11 pr-4 focus:ring-2 focus:outline-none ${errors.email ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-gray-300 focus:border-green-500 focus:ring-green-500/20"}`}
+                        />
+                        <label
+                            htmlFor="email"
+                            className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2"
+                        >
+                            Email
+                        </label>
+                    </div>
+                    {errors?.email && <p className="text-red-500 text-xs ml-4">{errors.email.message}</p>}
                 </div>
 
                 {/* password field  */}
-                <div className="relative">
-                    <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
-                    <input
-                        {...register("password", {required: true})}
-                        type={showPassword ? "text" : "password"}
-                        id="password"
-                        placeholder=" "
-                        className="peer w-full border border-gray-300 rounded-xl py-3.5 pl-11 pr-4 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none"
-                    />
-                    {showPassword ? (
-                        <FaEye
-                            className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
-                            onClick={() => setShowPassword(!showPassword)}
+                <div>
+                    <div className="relative">
+                        <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
+                        <input
+                            {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters long" } })}
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            placeholder=" "
+                            className={`peer w-full border rounded-xl py-3.5 pl-11 pr-4 focus:ring-2 focus:outline-none ${errors.password ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-gray-300 focus:border-green-500 focus:ring-green-500/20"}`}
                         />
-                    ) : (
-                        <FaEyeSlash
-                            className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
-                            onClick={() => setShowPassword(!showPassword)}
-                        />
-                    )}
-                    <label
-                        htmlFor="password"
-                        className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2"
-                    >
-                        Password
-                    </label>
+                        {showPassword ? (
+                            <FaEye
+                                className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
+                        ) : (
+                            <FaEyeSlash
+                                className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
+                        )}
+                        <label
+                            htmlFor="password"
+                            className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2"
+                        >
+                            Password
+                        </label>
+                    </div>
+                    {errors?.password && <p className="text-red-500 text-xs ml-4">{errors.password.message}</p>}
                 </div>
 
                 {/* confirm password field */}
-                <div className="relative">
-                    <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
-                    <input
-                        {...register("confirm_password", 
-                        {required: true,
-                         validate: (value) => value === password || "Passwords do not match"
-                        })}
-                        type={showConfirmPassword ? "text" : "password"}
-                        id="confirm_password"
-                        placeholder=" "
-                        className="peer w-full border border-gray-300 rounded-xl py-3.5 pl-11 pr-4 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none"
-                    />
-                    {showConfirmPassword ? (
-                        <FaEye
-                            className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                <div>
+                    <div className="relative">
+                        <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
+                        <input
+                            {...register("confirm_password", { required: "Confirm Password is required", validate: (value) => value === password || "Passwords do not match" })}
+                            type={showConfirmPassword ? "text" : "password"}
+                            id="confirm_password"
+                            placeholder=" "
+                            className={`peer w-full border rounded-xl py-3.5 pl-11 pr-4 focus:ring-2 focus:outline-none ${errors.confirm_password ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-gray-300 focus:border-green-500 focus:ring-green-500/20"}`}
                         />
-                    ) : (
-                        <FaEyeSlash
-                            className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        />
-                    )}
-                    <label
-                        htmlFor="confirm_password"
-                        className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2"
-                    >
-                        Confirm Password
-                    </label>
+                        {showConfirmPassword ? (
+                            <FaEye
+                                className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            />
+                        ) : (
+                            <FaEyeSlash
+                                className="text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 cursor-pointer hover:text-green-600 transition-all duration-200"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            />
+                        )}
+                        <label
+                            htmlFor="confirm_password"
+                            className="absolute left-11 top-1/2 -translate-y-1/2 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:left-4 peer-focus:text-xs peer-focus:font-semibold peer-focus:text-green-600 peer-focus:bg-[#e9fef0] peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:bg-[#e9fef0] peer-[:not(:placeholder-shown)]:px-2"
+                        >
+                            Confirm Password
+                        </label>
+                    </div>
+                    {errors?.confirm_password && <p className="text-red-500 text-xs ml-4">{errors.confirm_password.message}</p>}
                 </div>
-                <button disabled={!isValid} type="submit" className={`w-full py-3.5 rounded-xl font-semibold transition-all duration-200
-                ${isValid
-                        ? "bg-green-600 text-white hover:bg-green-700 cursor-pointer"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    }`}>
+                <button
+                    disabled={!isValid}
+                    type="submit"
+                    className={`w-full py-3.5 rounded-xl font-semibold transition-all duration-200
+                ${isValid ? "bg-green-600 text-white hover:bg-green-700 cursor-pointer" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                >
                     Register
                 </button>
             </motion.form>
