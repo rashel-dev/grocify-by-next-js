@@ -14,3 +14,9 @@ Day-3: 26/02/2026
 Day-4: 28/02/2026
 - setup initial animated welcome page
 - install framer-motion and react-icons
+
+Day-5: 01/03/2026
+- Design register form
+
+Day-6: 02/03/2026
+- Install react-hook-form
