@@ -11,7 +11,7 @@ const Welcome = ({ nextStep }: { nextStep: (step: number) => void }) => {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className='flex items-center gap-3 text-4xl md:text-5xl font-extrabold text-green-700'> <LuShoppingBasket className='text-green-600' /> Welcome to Grocify
+        className='flex items-center gap-3 text-3xl md:text-5xl font-extrabold text-green-700'> <LuShoppingBasket className='text-green-600' /> Welcome to Grocify
       </motion.h1>
 
       <motion.p
