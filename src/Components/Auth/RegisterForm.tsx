@@ -7,6 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiLogIn } from "react-icons/bi";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 interface IFormInputs {
     name: string;
@@ -39,9 +40,14 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                 email: data.email,
                 password: data.password,
             });
+            toast.success("Account created successfully! 🎉");
             console.log(response.data);
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong");
+            }
         } finally {
             setLoading(false);
         }
@@ -64,7 +70,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                 Join Grocify today and enjoy fresh products <FaLeaf className="text-green-600" />
             </p>
 
-            <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }} className="flex flex-col gap-3 w-full max-w-sm" onSubmit={handleSubmit(onSubmit)}>
+            <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }} className={`flex flex-col gap-3 w-full max-w-sm ${loading ? "pointer-events-none opacity-80" : ""}`} onSubmit={handleSubmit(onSubmit)}>
                 {/* Full Name Field*/}
                 <div>
                     <div className="relative">
