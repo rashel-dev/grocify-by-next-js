@@ -1,24 +1,25 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { FaArrowLeft, FaEye, FaEyeSlash, FaLeaf, FaLock, FaSpinner } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaLeaf, FaLock, FaSpinner } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiLogIn } from "react-icons/bi";
-import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface IFormInputs {
     email: string;
     password: string;
 }
 
-const LoginPage = ({ previousStep }: { previousStep: (step: number) => void }) => {
+const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -28,7 +29,29 @@ const LoginPage = ({ previousStep }: { previousStep: (step: number) => void }) =
     });
 
     const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
-        console.log(data);
+        try{
+            setLoading(true);
+            const result = await signIn("credentials", {
+                email: data.email,
+                password: data.password,
+                redirect: false
+            })
+            
+            if (result?.error) {
+                toast.error("Invalid email or password");
+            } else {
+                toast.success("Login successful");
+                
+                setTimeout(() => {
+                    router.replace("/");
+                }, 1000);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong"); // It is for network/server error
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -74,7 +97,7 @@ const LoginPage = ({ previousStep }: { previousStep: (step: number) => void }) =
                     <div className="relative">
                         <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
-                            autoComplete="new-password"
+                            autoComplete="current-password"
                             {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters long" } })}
                             type={showPassword ? "text" : "password"}
                             id="password"
