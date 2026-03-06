@@ -154,7 +154,7 @@ const LoginPage = () => {
                 type="button"
                 className="flex items-center justify-center gap-2 max-w-sm w-full py-3.5 border border-gray-300 rounded-xl font-semibold bg-white text-gray-500 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
             >
-                <FcGoogle className="w-4 h-4" />
+                <FcGoogle className="w-5 h-5" />
                 Sign in with Google
             </button>
 

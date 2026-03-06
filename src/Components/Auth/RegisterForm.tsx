@@ -9,6 +9,8 @@ import { BiLogIn } from "react-icons/bi";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface IFormInputs {
     name: string;
@@ -21,6 +23,8 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
+    const router = useRouter();
 
     const {
         register,
@@ -42,7 +46,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                 password: data.password,
             });
             toast.success("Account created successfully! 🎉");
-            console.log(response.data);
+            router.push("/");
         } catch (error: any) {
             if (error.response?.data?.message) {
                 toast.error(error.response.data.message);
@@ -53,7 +57,18 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
             setLoading(false);
         }
     };
-
+    const handleGoogleLogin = async () => {
+        try {
+            setGoogleLoading(true);
+            await signIn("google", {
+                redirect: true,
+                callbackUrl: "/",
+            });
+        } catch (error) {
+            toast.error("Google login failed");
+            setGoogleLoading(false);
+        }
+    };
     return (
         <div className="flex flex-col items-center justify-center px-6 py-10 relative">
             {/* Back button */}
@@ -71,7 +86,13 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                 Join Grocify today and enjoy fresh products <FaLeaf className="text-green-600" />
             </p>
 
-            <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }} className={`flex flex-col gap-3 w-full max-w-sm ${loading ? "pointer-events-none opacity-80" : ""}`} onSubmit={handleSubmit(onSubmit)}>
+            <motion.form
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className={`flex flex-col gap-3 w-full max-w-sm ${loading ? "pointer-events-none opacity-80" : ""}`}
+                onSubmit={handleSubmit(onSubmit)}
+            >
                 {/* Full Name Field*/}
                 <div>
                     <div className="relative">
@@ -220,11 +241,22 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
 
             {/* Google sign in button */}
             <button
+                disabled={googleLoading || loading}
                 type="button"
                 className="flex items-center justify-center gap-2 max-w-sm w-full py-3.5 border border-gray-300 rounded-xl font-semibold bg-white text-gray-500 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+                onClick={handleGoogleLogin}
             >
-                <FcGoogle className="w-4 h-4" />
-                Sign up with Google
+                {googleLoading ? (
+                    <>
+                        <FaSpinner className="animate-spin" />
+                        Redirecting...
+                    </>
+                ) : (
+                    <>
+                        <FcGoogle className="w-5 h-5" />
+                        Sign up with Google
+                    </>
+                )}
             </button>
 
             <p className="flex items-center gap-1 text-gray-600 mt-4 text-sm">
