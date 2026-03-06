@@ -19,6 +19,7 @@ interface IFormInputs {
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
     const router = useRouter();
     const {
         register,
@@ -28,6 +29,7 @@ const LoginPage = () => {
         mode: "onChange",
     });
 
+    // Email and password login handler
     const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
         try{
             setLoading(true);
@@ -51,6 +53,20 @@ const LoginPage = () => {
             toast.error("Something went wrong"); // It is for network/server error
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Google login handler
+    const handleGoogleLogin = async () => {
+        try {
+            setGoogleLoading(true);
+            await signIn("google", {
+                redirect: true,
+                callbackUrl: "/",
+            });
+        } catch (error) {
+            toast.error("Google login failed");
+            setGoogleLoading(false);
         }
     };
 
@@ -151,11 +167,22 @@ const LoginPage = () => {
 
             {/* Google sign in button */}
             <button
+                disabled={googleLoading || loading}
                 type="button"
                 className="flex items-center justify-center gap-2 max-w-sm w-full py-3.5 border border-gray-300 rounded-xl font-semibold bg-white text-gray-500 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+                onClick={handleGoogleLogin}
             >
-                <FcGoogle className="w-5 h-5" />
-                Sign in with Google
+                {googleLoading ? (
+                    <>
+                        <FaSpinner className="animate-spin w-5 h-5" />
+                        Signing in...
+                    </>
+                ) : (
+                    <>
+                        <FcGoogle className="w-5 h-5" />
+                        Sign in with Google
+                    </>
+                )}
             </button>
 
             <p className="flex items-center gap-1 text-gray-600 mt-4 text-sm">
