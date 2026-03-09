@@ -133,7 +133,13 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         <IoMdMail className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="email"
-                            {...register("email", { required: "Email is required", pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" } })}
+                            {...register("email", {
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: "Invalid email address",
+                                },
+                            })}
                             type="email"
                             id="email"
                             placeholder=" "
@@ -155,7 +161,13 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="new-password"
-                            {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters long" } })}
+                            {...register("password", {
+                                required: "Password is required",
+                                minLength: {
+                                    value: 6,
+                                    message: "Password must be at least 6 characters long",
+                                },
+                            })}
                             type={showPassword ? "text" : "password"}
                             id="password"
                             placeholder=" "
@@ -188,7 +200,10 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="new-password"
-                            {...register("confirm_password", { required: "Confirm Password is required", validate: (value) => value === password || "Password do not match" })}
+                            {...register("confirm_password", {
+                                required: "Confirm Password is required",
+                                validate: (value) => value === password || "Password do not match",
+                            })}
                             type={showConfirmPassword ? "text" : "password"}
                             id="confirm_password"
                             placeholder=" "
