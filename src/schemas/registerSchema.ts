@@ -18,4 +18,4 @@ export const registerSchema = z.object({
     confirm_password: z
         .string()
         .min(6, "Confirm password must be at least 6 characters long"),
-});
+})
