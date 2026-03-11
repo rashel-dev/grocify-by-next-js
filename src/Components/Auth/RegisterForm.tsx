@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { FaArrowLeft, FaEye, FaEyeSlash, FaLeaf, FaLock, FaSpinner, FaUser } from "react-icons/fa";
+import { FaArrowLeft, FaCheck, FaCircle, FaEye, FaEyeSlash, FaLeaf, FaLock, FaSpinner, FaUser } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -12,14 +12,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "@/schemas/registerSchema";
-
-interface IFormInputs {
-    name: string;
-    email: string;
-    password: string;
-    confirm_password: string;
-}
+import { RegisterInput, registerSchema } from "@/schemas/registerSchema";
 
 const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -33,14 +26,53 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
         handleSubmit,
         watch,
         formState: { isValid, errors },
-    } = useForm<IFormInputs>({
+    } = useForm<RegisterInput>({
         resolver: zodResolver(registerSchema),
         mode: "onChange",
     });
 
     const password = watch("password");
 
-    const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
+    // Password focus state
+    const isPasswordFocused = !!password;
+
+    // Password strength requirements
+    const strengthRequirements = useMemo(() => [
+            { label: "6+ characters", met: (password || "").length >= 6 },
+            { label: "Uppercase", met: /[A-Z]/.test(password || "") },
+            { label: "Lowercase", met: /[a-z]/.test(password || "") },
+            { label: "Number", met: /[0-9]/.test(password || "") },
+            { label: "Special character", met: /[^A-Za-z0-9]/.test(password || "") },
+        ],
+        [password],
+    );
+
+    // Password strength score
+    const strengthScore = useMemo(() => 
+        strengthRequirements.filter((req) => req.met).length, [strengthRequirements]
+    );
+
+    // Password strength color
+    const getStrengthColor = (score: number) => {
+        if (score <= 1) return "bg-red-500";
+        if (score <= 2) return "bg-orange-500";
+        if (score <= 3) return "bg-yellow-500";
+        if (score <= 4) return "bg-blue-500";
+        return "bg-green-500";
+    };
+
+    //password strength label
+    const getStrengthLabel = (score: number) => {
+        if (score === 0) return "";
+        if (score <= 1) return "Very Weak";
+        if (score <= 2) return "Weak";
+        if (score <= 3) return "Fair";
+        if (score <= 4) return "Good";
+        return "Strong";
+    };
+
+    // Register handler with email and password
+    const onSubmit: SubmitHandler<RegisterInput> = async (data) => {
         try {
             setLoading(true);
             const response = await axios.post("/api/auth/register", {
@@ -60,6 +92,8 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
             setLoading(false);
         }
     };
+
+    // Google login handler
     const handleGoogleLogin = async () => {
         try {
             setGoogleLoading(true);
@@ -68,7 +102,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                 callbackUrl: "/",
             });
         } catch (error) {
-            toast.error("Google login failed");
+            toast.error("Google login failed. Please try again later.");
             setGoogleLoading(false);
         }
     };
@@ -173,6 +207,33 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         </label>
                     </div>
                     {errors?.password && <p className="text-red-500 text-xs ml-4">{errors.password.message}</p>}
+
+                    {/* Password Strength Visuals */}
+                    {isPasswordFocused && (
+                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-3 px-1">
+                            <div className="flex justify-between items-center mb-1.5">
+                                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Password Strength</span>
+                                <span className={`text-[10px] font-bold uppercase ${getStrengthColor(strengthScore).replace("bg-", "text-")}`}>{getStrengthLabel(strengthScore)}</span>
+                            </div>
+
+                            {/* Segmented Progress Bar */}
+                            <div className="flex gap-1.5 h-1.5 mb-3">
+                                {[1, 2, 3, 4, 5].map((level) => (
+                                    <div key={level} className={`flex-1 rounded-full transition-all duration-500 ${level <= strengthScore ? getStrengthColor(strengthScore) : "bg-gray-200"}`} />
+                                ))}
+                            </div>
+
+                            {/* Requirements Checklist */}
+                            <div className="grid grid-cols-2 gap-y-1.5 gap-x-2">
+                                {strengthRequirements.map((req, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        {req.met ? <FaCheck className="text-green-500 w-2.5 h-2.5" /> : <FaCircle className="text-gray-300 w-2 h-2" />}
+                                        <span className={`text-[11px] font-medium transition-colors duration-300 ${req.met ? "text-green-600" : "text-gray-400"}`}>{req.label}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
                 </div>
 
                 {/* confirm password field */}
