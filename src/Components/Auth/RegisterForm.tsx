@@ -11,6 +11,8 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "@/schemas/registerSchema";
 
 interface IFormInputs {
     name: string;
@@ -32,6 +34,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
         watch,
         formState: { isValid, errors },
     } = useForm<IFormInputs>({
+        resolver: zodResolver(registerSchema),
         mode: "onChange",
     });
 
@@ -99,17 +102,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         <FaUser className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="name"
-                            {...register("name", {
-                                required: "Name is required",
-                                minLength: {
-                                    value: 3,
-                                    message: "Name must be at least 3 characters long",
-                                },
-                                pattern: {
-                                    value: /^[A-Za-z\s]+$/,
-                                    message: "Name can only contain letters and spaces",
-                                },
-                            })}
+                            {...register("name")}
                             type="text"
                             id="name"
                             placeholder=" "
@@ -133,13 +126,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         <IoMdMail className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="email"
-                            {...register("email", {
-                                required: "Email is required",
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: "Invalid email address",
-                                },
-                            })}
+                            {...register("email")}
                             type="email"
                             id="email"
                             placeholder=" "
@@ -161,13 +148,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="new-password"
-                            {...register("password", {
-                                required: "Password is required",
-                                minLength: {
-                                    value: 6,
-                                    message: "Password must be at least 6 characters long",
-                                },
-                            })}
+                            {...register("password")}
                             type={showPassword ? "text" : "password"}
                             id="password"
                             placeholder=" "
@@ -200,10 +181,7 @@ const RegisterForm = ({ previousStep }: { previousStep: (step: number) => void }
                         <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="new-password"
-                            {...register("confirm_password", {
-                                required: "Confirm Password is required",
-                                validate: (value) => value === password || "Password do not match",
-                            })}
+                            {...register("confirm_password")}
                             type={showConfirmPassword ? "text" : "password"}
                             id="confirm_password"
                             placeholder=" "
