@@ -10,11 +10,8 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-interface IFormInputs {
-    email: string;
-    password: string;
-}
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginInput, loginSchema } from "@/schemas/loginSchema";
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -25,12 +22,13 @@ const LoginPage = () => {
         register,
         handleSubmit,
         formState: { isValid, errors },
-    } = useForm<IFormInputs>({
+    } = useForm<LoginInput>({
+        resolver: zodResolver(loginSchema),
         mode: "onChange",
     });
 
     // Email and password login handler
-    const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
+    const onSubmit: SubmitHandler<LoginInput> = async (data) => {
         try{
             setLoading(true);
             const result = await signIn("credentials", {
@@ -49,7 +47,7 @@ const LoginPage = () => {
                 }, 1000);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error("Something went wrong"); // It is for network/server error
         } finally {
             setLoading(false);
@@ -92,7 +90,7 @@ const LoginPage = () => {
                         <IoMdMail className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="email"
-                            {...register("email", { required: "Email is required", pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" } })}
+                            {...register("email")}
                             type="email"
                             id="email"
                             placeholder=" "
@@ -114,7 +112,7 @@ const LoginPage = () => {
                         <FaLock className="text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <input
                             autoComplete="current-password"
-                            {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters long" } })}
+                            {...register("password")}
                             type={showPassword ? "text" : "password"}
                             id="password"
                             placeholder=" "
