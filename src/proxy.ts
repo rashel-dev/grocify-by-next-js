@@ -1,9 +1,29 @@
+import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function proxy(request: NextRequest) {
-    const {pathname} = request.nextUrl;
+    const { pathname } = request.nextUrl;
 
-    console.log(pathname);
+    const publicRoutes = ["/login", "/register", "/api/auth"];
+
+    if(publicRoutes.some((route) => pathname.startsWith(route))) {
+        return NextResponse.next();
+    }
+
+    const token = await getToken({ 
+        req: request, 
+        secret: process.env.AUTH_SECRET 
+    });
+
+    if(!token) {
+        const loginUrl = new URL("/login", request.url);
+        loginUrl.searchParams.set("callbackUrl", request.url);
+        return NextResponse.redirect(loginUrl);
+    }
 
     return NextResponse.next();
 }
+
+export const config = {
+    matcher: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+};
