@@ -6,6 +6,6 @@ export const roleMobileSchema = z.object({
         .string()
         .trim()
         .length(11, "Mobile number must be 11 digits")
-        .regex(/^01[3-9]\d{8}$/, "Invalid mobile number"),
+        .regex(/^01[3-9]\d{8}$/, "Invalid mobile number")
 });
 export type RoleMobileInput = z.infer<typeof roleMobileSchema>;
