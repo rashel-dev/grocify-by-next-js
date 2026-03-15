@@ -4,8 +4,13 @@ import { motion } from "framer-motion";
 import { RoleMobileInput, roleMobileSchema } from "@/schemas/roleMobileSchema";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const EditRoleMobile = () => {
+
+    const router = useRouter();
 
     // roles collection
     const roles = [
@@ -43,8 +48,19 @@ const EditRoleMobile = () => {
     const selectedRole = watch("role");
 
     const onSubmit: SubmitHandler<RoleMobileInput> = async (data) => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        console.log(data);
+        try {
+            const response = await axios.post("/api/user/edit-role-mobile",data);
+            if(response.status === 200) {
+                toast.success(response.data.message);
+                router.refresh();
+            }
+        } catch (error: any) {
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong");
+            }
+        }
     };
 
     return (
@@ -66,7 +82,7 @@ const EditRoleMobile = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.1, delay: 0.5 }}
-                        className={`flex flex-col justify-center items-center border-2 p-4 rounded-xl transition-all duration-300 cursor-pointer ${
+                        className={`flex flex-col justify-center items-center border-2 p-4 rounded-xl w-full md:w-max transition-all duration-300 cursor-pointer ${
                             selectedRole === item.value ? "border-green-600 bg-green-100 shadow-lg scale-105" : "border-gray-300 hover:border-green-300 hover:shadow-md"
                         }`}
                     >
