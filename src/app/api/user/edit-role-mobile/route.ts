@@ -20,7 +20,8 @@ export async function POST(req: NextRequest) {
         // update user role and mobile
         const user = await User.findOneAndUpdate(
             {email: session.user.email}, 
-            {role, mobile}
+            {role, mobile},
+            {new: true}
         )
 
         // check if user is updated
