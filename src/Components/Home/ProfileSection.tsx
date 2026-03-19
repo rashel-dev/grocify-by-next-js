@@ -1,24 +1,39 @@
 "use client";
-import { AnimatePresence } from "motion/react";
 import { User } from "next-auth";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { LuPackage } from "react-icons/lu";
 import { IoIosLogOut } from "react-icons/io";
 
 const ProfileSection = ({ user }: { user: User }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const dropDownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
-        <div className="relative">
+        <div className="relative z-50" ref={dropDownRef}>
             {/* User Profile icon */}
             <div className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
                 {user.image ? (
                     <Image src={user.image} alt={user.name || "User"} width={40} height={40} className="rounded-full" />
                 ) : (
-                    <FaUser className="text-white w-6 h-6 hover:text-white/80 transition-colors duration-300" />
+                    <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full">
+                        <FaUser className="text-white w-5 h-5" />
+                    </div>
                 )}
             </div>
 
@@ -30,7 +45,7 @@ const ProfileSection = ({ user }: { user: User }) => {
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.2 }}
                         className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg px-2 py-2 border border-gray-200 z-50 w-56"
                     >
                         {/* user info */}
@@ -39,7 +54,9 @@ const ProfileSection = ({ user }: { user: User }) => {
                                 {user.image ? (
                                     <Image src={user.image} alt={user.name || "User"} width={40} height={40} className="rounded-full" />
                                 ) : (
-                                    <FaUser className="text-white w-6 h-6 hover:text-white/80 transition-colors duration-300" />
+                                    <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full">
+                                        <FaUser className="text-white w-5 h-5" />
+                                    </div>
                                 )}
                             </div>
                             <div className="">
