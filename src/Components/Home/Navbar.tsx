@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { FaShoppingCart } from 'react-icons/fa';
 import { LuSearch } from 'react-icons/lu';
 import ProfileSection from './ProfileSection';
+import MobileSearch from './MobileSearch';
 
 const Navbar = ({user}: {user: User}) => {
 
@@ -20,6 +21,9 @@ const Navbar = ({user}: {user: User}) => {
             </form>
 
             <div className="flex items-center gap-3 md:gap-6 relative">
+                {/* Mobile search component*/}
+                <MobileSearch />
+
                 {/* Cart icon */}
                 <Link href={"/cart"}>
                     <div className="relative">
