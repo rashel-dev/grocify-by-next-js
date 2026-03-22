@@ -1,34 +1,35 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { LuSearch } from "react-icons/lu";
+import { LuSearch, LuX } from "react-icons/lu";
 
 const MobileSearch = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     return (
-        <div className="flex md:hidden items-center relative">
-            {!isSearchOpen && (
-                <button onClick={() => setIsSearchOpen(true)} className="text-white hover:text-white/80 transition-colors duration-300">
-                    <LuSearch className="w-6 h-6" />
-                </button>
-            )}
-
-            <div
-                className={`flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-500 ease-in-out ${
-                    isSearchOpen ? "w-48 px-3 py-1.5 opacity-100" : "w-0 px-0 opacity-0"
-                }`}
-            >
-                <LuSearch className="text-gray-500 w-4 h-4 mr-2 shrink-0" />
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    autoFocus={isSearchOpen}
-                    className="outline-none w-full text-gray-700 text-sm placeholder:text-gray-400 bg-transparent"
-                    onBlur={() => setIsSearchOpen(false)}
-                />
+        <>
+            <div className="bg-white rounded-full w-11 h-11 flex justify-center items-center shadow-md hover:scale-105 transition-all duration-300 cursor-pointer md:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
+                <LuSearch className="text-green-600 w-6 h-6" />
             </div>
-        </div>
+
+            <AnimatePresence>
+                {isSearchOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0, y:-10, scale: 0.95 }}
+                        animate={{ opacity: 1, y:0, scale: 1 }}
+                        exit={{ opacity: 0, y:-10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed top-24 left-1/2 -translate-x-1/2 w-[90%] bg-white z-50 flex justify-center items-center rounded-full shadow-lg px-4 py-2">
+                            <LuSearch className="text-gray-500 w-5 h-5 mr-2" />
+                            <input type="text" placeholder="Search products..." className="outline-none w-full text-gray-700 placeholder:text-gray-400" />
+                            <button onClick={() => setIsSearchOpen(false)} className="text-gray-500 w-5 h-5 mr-2 cursor-pointer">
+                                <LuX />
+                            </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 };
 
