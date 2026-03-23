@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import EditRoleMobile from "@/Components/Home/EditRoleMobile";
+import HeroSection from "@/Components/Home/HeroSection";
 import Navbar from "@/Components/Home/Navbar";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user.model";
@@ -20,6 +21,7 @@ export default async function Home() {
   return (
     <div>
       <Navbar user={user}/>
+      <HeroSection />
     </div>
   );
 }
