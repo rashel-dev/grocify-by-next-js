@@ -107,6 +107,17 @@ const HeroSection = () => {
                 </motion.div>
 
             </div>
+
+            {/* Navigation Dots */}
+            <div className='absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3'>
+                {slidesData.map((_, index) => (
+                    <button
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${index === currentIndex ? 'bg-white w-8' : 'bg-white/50'}`}
+                    />
+                ))}
+            </div>
             
         </div>
     );
