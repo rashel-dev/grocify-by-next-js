@@ -25,13 +25,7 @@ const EditRoleMobile = () => {
             icon: "🛵",
             description: "I am a delivery person",
             value: "rider",
-        },
-        {
-            name: "Admin",
-            icon: "👑",
-            description: "I am an administrator",
-            value: "admin",
-        },
+        }
     ] as const;
 
     const {
