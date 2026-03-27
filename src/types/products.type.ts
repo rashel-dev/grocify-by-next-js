@@ -1,11 +1,12 @@
+import mongoose from "mongoose";
+
 interface IProduct {
+    _id: mongoose.Types.ObjectId;
     name: string;
-    price: number;
+    price: string;
     image: string;
     category: string;
-    stock: number;
     unit: string;
-    description: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
