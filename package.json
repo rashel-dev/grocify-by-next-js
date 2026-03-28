@@ -12,6 +12,7 @@
     "@hookform/resolvers": "^5.2.2",
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.9.0",
     "mongoose": "^9.2.1",
     "motion": "^12.34.3",
     "next": "16.1.6",
